@@ -1,0 +1,61 @@
+apply plugin: 'net.ltgt.apt-eclipse'
+apply plugin: 'com.github.johnrengelman.shadow'
+
+apply plugin: 'application'
+
+mainClassName = "ru.lanwen.micronaut.Application"
+
+dependencies {
+    annotationProcessor 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+    compileOnly 'org.projectlombok:lombok'
+    testCompileOnly 'org.projectlombok:lombok'
+
+
+    annotationProcessor "io.micronaut:micronaut-inject-java"
+    compileOnly  "io.micronaut:micronaut-inject-java"
+    annotationProcessor "io.micronaut:micronaut-validation"
+    compileOnly  "io.micronaut:micronaut-validation"
+
+
+    testAnnotationProcessor "io.micronaut:micronaut-inject-java"
+    testCompileOnly "io.micronaut:micronaut-inject-java"
+
+    implementation "io.micronaut:micronaut-inject"
+    implementation "io.micronaut:micronaut-validation"
+    implementation 'io.micronaut.configuration:micronaut-hibernate-validator'
+    implementation "io.micronaut:micronaut-runtime"
+    implementation "javax.annotation:javax.annotation-api"
+    implementation "io.micronaut:micronaut-http-server-netty"
+    implementation "io.micronaut:micronaut-http-client"
+
+    implementation 'io.projectreactor:reactor-core'
+
+    testImplementation 'io.rest-assured:rest-assured'
+    testImplementation 'org.awaitility:awaitility'
+    testImplementation 'org.assertj:assertj-core'
+
+    runtimeOnly "ch.qos.logback:logback-classic"
+}
+
+configurations {
+    // for dependencies that are needed for development only
+    developmentOnly
+}
+
+test.classpath += configurations.developmentOnly
+
+
+// use JUnit 5 platform
+
+tasks.withType(JavaCompile){
+    options.encoding = "UTF-8"
+    options.compilerArgs.add('-parameters')
+}
+
+shadowJar {
+    mergeServiceFiles()
+}
+
+run.classpath += configurations.developmentOnly
+run.jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote')

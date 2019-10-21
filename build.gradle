@@ -1,0 +1,47 @@
+plugins {
+    id "net.ltgt.apt-eclipse" version "0.21" apply false
+    id "com.github.johnrengelman.shadow" version "5.0.0" apply false
+    id "io.spring.dependency-management" version "1.0.8.RELEASE" apply false
+}
+
+repositories {
+    jcenter()
+}
+
+allprojects {
+    apply plugin: 'java'
+    apply plugin: 'io.spring.dependency-management'
+
+    repositories {
+        jcenter()
+    }
+    
+    targetCompatibility = sourceCompatibility = 11
+
+    dependencyManagement {
+        imports {
+            mavenBom "io.micronaut:micronaut-bom:1.2.3"
+            mavenBom "io.projectreactor:reactor-core:3.3.0.RELEASE"
+        }
+
+        dependencies {
+
+            dependency "ch.qos.logback:logback-classic:1.2.3"
+            dependency "org.projectlombok:lombok:1.18.8"
+            dependency "io.rest-assured:rest-assured:4.1.2"
+            dependency 'org.awaitility:awaitility:3.1.6'
+            dependency 'org.assertj:assertj-core:3.13.2'
+        }
+    }
+
+    dependencies {
+        testImplementation "org.junit.jupiter:junit-jupiter-api"
+        testImplementation "io.micronaut.test:micronaut-test-junit5"
+        testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+}
+
